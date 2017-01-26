@@ -18,6 +18,6 @@ public class ball : MonoBehaviour {
         //transform.position = basic.position + basic.forward * volocity;
         //rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        rb.AddForce(basic.forward * 100);
+        rb.AddForce(basic.forward * 1000);
 	}
 }
