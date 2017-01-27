@@ -3,13 +3,13 @@ using UnityEngine.UI;
 
 public class progressCircle : MonoBehaviour
 {
-    public Image filterImg;    
-    public bool isProgressCircleRun;    
+    public Image filterImg;
+    public bool isProgressCircleRun;
     //public float progressSpeed;
     public gameController gameControllerScript;
 
     private float FinishValue;
-    public float fillValue;//fractional of filling 
+    public float fillValue;//fractional of filling
     //public Text attachedText;
     // Use this for initialization
     void Start()
@@ -35,6 +35,7 @@ public class progressCircle : MonoBehaviour
                 fillValue +=1;
                 if(fillValue >= FinishValue) {//disappear it
                     this.gameObject.SetActive(false);
+                    //Debug.Log(fillValue);
                     isProgressCircleRun = false;
                 }
                 else
@@ -46,5 +47,3 @@ public class progressCircle : MonoBehaviour
         }
     }
 }
-
-
