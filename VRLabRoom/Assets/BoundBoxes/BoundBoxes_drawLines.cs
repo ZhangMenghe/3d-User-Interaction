@@ -17,9 +17,9 @@ public class BoundBoxes_drawLines : MonoBehaviour {
 	}
 	
 	void Start () {
-//		outlines = new List<Vector3[,]>();
-//		colors = new List<Color>();
-//		CreateLineMaterial();
+		outlines = new List<Vector3[,]>();
+		colors = new List<Color>();
+		CreateLineMaterial();
 	}
 
 	void CreateLineMaterial()
@@ -50,6 +50,13 @@ public class BoundBoxes_drawLines : MonoBehaviour {
 		
 	public void setOutlines(Vector3[,] newOutlines, Color newcolor) {
 		if(newOutlines.GetLength(0)>0)	{
+            if(outlines == null)
+            {
+                outlines = new List<Vector3[,]>();
+                colors = new List<Color>();
+                CreateLineMaterial();
+            }
+
 			outlines.Add(newOutlines);
 			//Debug.Log ("no "+newOutlines.GetLength(0).ToString());
 			colors.Add(newcolor);

@@ -9,7 +9,8 @@ public class SpawnObjs : MonoBehaviour {
     public Transform tvPrefab;
     public Transform boardPrefab;
     public Transform deskPrefab;
-
+    public bool forceToSpawnAll;
+    public bool allExist;
     public OVRInput.Controller controller;
 
     // public Transform ws2Prefab;
@@ -19,6 +20,7 @@ public class SpawnObjs : MonoBehaviour {
     private bool[] existList;
     // Use this for initialization
     void Start () {
+        forceToSpawnAll = false;
         spawnSequence = -1;
         existList = new bool[8];
         for (int i = 0; i < 8; i++)
@@ -27,20 +29,20 @@ public class SpawnObjs : MonoBehaviour {
 
     bool NeedSpawnSomething()
     {
-        //return (Input.GetKey(KeyCode.Space));
         bool need = OVRInput.Get(OVRInput.Button.One, controller);
-        //if (need)
-            //Debug.Log("spawn");
+
         return need;
     }
     void updateSpawnSelection()
     {
         spawnSequence = (spawnSequence+1)%8;
+        if (spawnSequence == 7)
+            allExist = true;
     }
     // Update is called once per frame
     void Update()
     {
-        if (NeedSpawnSomething())
+        if (forceToSpawnAll || NeedSpawnSomething())
         {
             updateSpawnSelection();
             //spawnSequence = 2;
@@ -55,7 +57,7 @@ public class SpawnObjs : MonoBehaviour {
                         break;
                     case 1://paint
                         var paintP = Instantiate(paintPrefab, new Vector3(0.3f, -0.4f, 1.13f), Quaternion.Euler(0, 7.843f, 0));
-                        paintP.gameObject.name = "Paint";
+                        paintP.gameObject.name = "paintGroup";
                         //transform.Rotate(new Vector3(.0f, 7.843f, .0f));
                         break;
                     case 2://storage
