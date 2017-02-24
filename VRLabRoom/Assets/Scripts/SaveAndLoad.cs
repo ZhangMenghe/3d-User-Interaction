@@ -9,6 +9,7 @@ class objData
 }
 public class SaveAndLoad : MonoBehaviour {
     public string fileName;
+    public SpawnObjs SpawnScript;
     private string[] findNameList;
     private int[] findItemNum;
     private StreamWriter file;
@@ -16,6 +17,8 @@ public class SaveAndLoad : MonoBehaviour {
     private Transform[] targetGroup;
     // Use this for initialization
     void Start () {
+        GameObject Controller = GameObject.Find("Controller");
+        SpawnScript = Controller.GetComponent<SpawnObjs>();
         initialFind();//findNameList and findItemNum
     }
 	void initialFind()
@@ -23,13 +26,13 @@ public class SaveAndLoad : MonoBehaviour {
         findNameList = new string[8];//desks, whiteboard, paint, lock, storage, tv 
         findNameList[0] = "Lock";
         findNameList[1] = "WhiteBoard";
-        findNameList[2] = "Paint";
+        findNameList[2] = "paintGroup";
         findNameList[3] = "Storage";
         findNameList[4] = "TV";
         findNameList[5] = "DeskGroup";
         findNameList[6] = "Desk";
         findNameList[7] = "Chair";
-        findItemNum = new int[6];
+        findItemNum = new int[8];
         findItemNum[0] = 1;
         findItemNum[1] = 1;
         findItemNum[2] = 1;
@@ -77,6 +80,7 @@ public class SaveAndLoad : MonoBehaviour {
             for (int j = 0; j < findItemNum[i]; j++)
             {
                 string name = findNameList[i] + j.ToString();
+                //Debug.Log(name);
                 targetGroup[j] = GameObject.Find(name).transform;
             }
             return false;
@@ -85,6 +89,7 @@ public class SaveAndLoad : MonoBehaviour {
     public void Save()
     {
         file = new StreamWriter(fileName);
+        file.WriteLine(Time.time);
         //rotation = GameObject.Find("Cube").transform.rotation;
         for (int i = 0; i < findNameList.Length; i++)
         {
@@ -108,11 +113,7 @@ public class SaveAndLoad : MonoBehaviour {
                 }
             }
         }
-
-
-        //file.WriteLine(Time.time + " | " + "Cube");
-
-        Debug.Log("save to " + fileName);
+      Debug.Log("save to " + fileName);
         file.Close();
     }
     private void restoreRotation(GameObject obj, string[] rot)
@@ -126,7 +127,8 @@ public class SaveAndLoad : MonoBehaviour {
     public void Load()
     {
         string[] lines = System.IO.File.ReadAllLines(fileName);
-        int index = 0;
+        int index = 1;//firstline for Time information
+        //Debug.Log(lines[0]);
         Transform restoreTarget;
         for (int i = 0; i < findNameList.Length; i++)
         {
@@ -152,11 +154,28 @@ public class SaveAndLoad : MonoBehaviour {
     }
     // Update is called once per frame
     void Update () {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.RightShift))
         {
-            Save();
+            if (!SpawnScript.allExist)
+            {
+                SpawnScript.forceToSpawnAll = true;
+                Debug.Log("Waitfor all exist and press again");
+            }
+                
+            else
+                Save();
         }
         if (Input.GetKeyDown(KeyCode.LeftShift))
-            Load();
+        {
+            if (!SpawnScript.allExist)
+            {
+                SpawnScript.forceToSpawnAll = true;
+                Debug.Log("Waitfor all exist and press again");
+            }
+
+            else
+                Load();
+        }
+            
     }
 }

@@ -29,7 +29,7 @@ public class ItemMovement : MonoBehaviour {
     private GameObject rotateObj;
     private bool isUsingLeftHand;
     private int Reloadtimer;
-
+    private Vector3 paintRight;
     // Use this for initialization
     void Start () {
         selectPos = new Vector3(.0f, .0f, .0f);
@@ -46,6 +46,7 @@ public class ItemMovement : MonoBehaviour {
         itemMoveTimeCount = 0;
         Reloadtimer = 0;
         isUsingLeftHand = false;
+        paintRight = new Vector3(1.0f,.0f,-0.1f) ;
     }
     void ShootLaserFromTargetPosition(Vector3 targetPosition, Vector3 direction, float length)
     {
@@ -194,6 +195,7 @@ public class ItemMovement : MonoBehaviour {
         selectPos.z = Mathf.Min(selectPos.z, roomBound.center.z + roomBound.extents.z);
         selectPos.z = Mathf.Max(selectPos.z, roomBound.center.z - roomBound.extents.z);
     }
+
     bool IsDoingMovement()
     {
         if (OVRInput.Get(OVRInput.RawButton.RHandTrigger)){
@@ -232,7 +234,7 @@ public class ItemMovement : MonoBehaviour {
             //check if hit something
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.transform.gameObject.name == "Plane" || hit.transform.gameObject.name == "WhiteBoard(Clone)" || hit.transform.gameObject.name == "paintGroup(Clone)")
+                if (hit.transform.gameObject.name == "Plane")
                     return false;
                 selectPos = hit.point;
                 rotateObj = hit.transform.gameObject;
@@ -257,18 +259,18 @@ public class ItemMovement : MonoBehaviour {
         checkReloadTimer();
         if (IsDoingMovement())
         {
-            if(movementTimeCount ++ > movementTimeSheldhold)
+            if (movementTimeCount++ > movementTimeSheldhold)
             {
                 BoundedSelectPointByRoom();
                 transform.position = new Vector3(selectPos.x, transform.position.y, selectPos.z);
                 movementTimeCount = 0;
             }
-            
+
         }
         else if (IsDoingRotation())
         {
             Debug.Log(rotateObj.name);
-            if(rotateObj.name == "LockGroup(Clone)")
+            if(rotateObj.name == "Lock" || rotateObj.name == "WhiteBoard")
                 rotateObj.transform.Rotate(Vector3.up);
             else
                 rotateObj.transform.Rotate(Vector3.forward);
@@ -290,12 +292,29 @@ public class ItemMovement : MonoBehaviour {
                     float moveX = obj.transform.position.x - basePos.x;
                     float moveZ = obj.transform.position.z - basePos.z;
 
-                    if (obj.name == "WhiteBoard(Clone)" || obj.name == "paintGroup(Clone)")
+                    if (obj.name == "WhiteBoard" || obj.name == "paintGroup")
                     {
                         if (moveList.Count != 1)
                             continue;//don't move
+                        if (obj.name == "paintGroup")
+                        {
+                            //obj.transform.position = new Vector3(selectPos.x, obj.transform.position.y, obj.transform.position.z + (selectPos.x - obj.transform.position.x) * (-0.15f));//try not to hardcode
+                            if (selectPos.x < obj.transform.position.x)
+                                obj.transform.Translate(-paintRight * 0.1f);
+                            else
+                                obj.transform.Translate(paintRight * 0.1f);
+                            //Debug.Log(obj.transform.right);
+                        }
                         else
-                            obj.transform.position = new Vector3(selectPos.x, obj.transform.position.y, obj.transform.position.z + (selectPos.x - obj.transform.position.x) * (-0.15f));//try not to hardcode
+                        {
+                            //obj.transform.position = new Vector3(selectPos.x, obj.transform.position.y, obj.transform.position.z + (selectPos.x - obj.transform.position.x) * (-0.15f));//try not to hardcode
+                            if (selectPos.x < obj.transform.position.x)
+                                obj.transform.Translate(paintRight * 0.1f);
+                            else
+                                obj.transform.Translate(-paintRight * 0.1f);
+                            //Debug.Log(obj.transform.right);
+                        }
+
                     }
                     else
                         //obj.transform.position = new Vector3(selectPos.x+(obj.transform.position.x-basePos.x), basePos.y, selectPos.z+(obj.transform.position.z - basePos.z));
@@ -308,5 +327,9 @@ public class ItemMovement : MonoBehaviour {
             laserLineRender.enabled = false;
         isUsingLeftHand = false;
 
+    }
+    public void onClickStatement()
+    {
+        Debug.Log("show statement");
     }
 }
