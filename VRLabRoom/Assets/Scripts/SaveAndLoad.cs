@@ -10,6 +10,11 @@ class objData
 public class SaveAndLoad : MonoBehaviour {
     public string fileName;
     public SpawnObjs SpawnScript;
+<<<<<<< HEAD
+=======
+    public bool shouldSave;
+    public bool shouldLoad;
+>>>>>>> 5bcde40883666a4243a765bd4e1695d39b37ab31
     private string[] findNameList;
     private int[] findItemNum;
     private StreamWriter file;
@@ -20,6 +25,8 @@ public class SaveAndLoad : MonoBehaviour {
         GameObject Controller = GameObject.Find("Controller");
         SpawnScript = Controller.GetComponent<SpawnObjs>();
         initialFind();//findNameList and findItemNum
+        shouldSave = false;
+        shouldLoad = false;
     }
 	void initialFind()
     {
@@ -88,6 +95,7 @@ public class SaveAndLoad : MonoBehaviour {
     }
     public void Save()
     {
+        shouldSave = false;
         file = new StreamWriter(fileName);
         file.WriteLine(Time.time);
         //rotation = GameObject.Find("Cube").transform.rotation;
@@ -126,6 +134,7 @@ public class SaveAndLoad : MonoBehaviour {
     }
     public void Load()
     {
+        shouldLoad = false;
         string[] lines = System.IO.File.ReadAllLines(fileName);
         int index = 1;//firstline for Time information
         //Debug.Log(lines[0]);
@@ -154,13 +163,29 @@ public class SaveAndLoad : MonoBehaviour {
     }
     // Update is called once per frame
     void Update () {
+<<<<<<< HEAD
         if (Input.GetKeyDown(KeyCode.RightShift))
+=======
+        if (shouldSave)
         {
             if (!SpawnScript.allExist)
             {
                 SpawnScript.forceToSpawnAll = true;
                 Debug.Log("Waitfor all exist and press again");
             }
+                
+            else
+                Save();
+        }
+        if (shouldLoad)
+>>>>>>> 5bcde40883666a4243a765bd4e1695d39b37ab31
+        {
+            if (!SpawnScript.allExist)
+            {
+                SpawnScript.forceToSpawnAll = true;
+                Debug.Log("Waitfor all exist and press again");
+            }
+<<<<<<< HEAD
                 
             else
                 Save();
@@ -176,6 +201,12 @@ public class SaveAndLoad : MonoBehaviour {
             else
                 Load();
         }
+=======
+
+            else
+                Load();
+        }
+>>>>>>> 5bcde40883666a4243a765bd4e1695d39b37ab31
             
     }
 }
